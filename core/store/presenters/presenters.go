@@ -44,15 +44,14 @@ type EnvPrinter struct {
 	ClientNodeURL                         string          `json:"CLIENT_NODE_URL"`
 	DatabaseBackupFrequency               time.Duration   `json:"DATABASE_BACKUP_FREQUENCY"`
 	DatabaseBackupMode                    string          `json:"DATABASE_BACKUP_MODE"`
-	DatabaseTimeout                       models.Duration `json:"DATABASE_TIMEOUT"`
 	DatabaseMaximumTxDuration             time.Duration   `json:"DATABASE_MAXIMUM_TX_DURATION"`
+	DatabaseTimeout                       models.Duration `json:"DATABASE_TIMEOUT"`
 	DefaultHTTPLimit                      int64           `json:"DEFAULT_HTTP_LIMIT"`
 	DefaultHTTPTimeout                    models.Duration `json:"DEFAULT_HTTP_TIMEOUT"`
 	Dev                                   bool            `json:"CHAINLINK_DEV"`
 	EnableExperimentalAdapters            bool            `json:"ENABLE_EXPERIMENTAL_ADAPTERS"`
 	EnableLegacyJobPipeline               bool            `json:"ENABLE_LEGACY_JOB_PIPELINE"`
 	EthBalanceMonitorBlockDelay           uint16          `json:"ETH_BALANCE_MONITOR_BLOCK_DELAY"`
-	EthereumDisabled                      bool            `json:"ETH_DISABLED"`
 	EthFinalityDepth                      uint            `json:"ETH_FINALITY_DEPTH"`
 	EthGasBumpThreshold                   uint64          `json:"ETH_GAS_BUMP_THRESHOLD"`
 	EthGasBumpTxDepth                     uint16          `json:"ETH_GAS_BUMP_TX_DEPTH"`
@@ -63,9 +62,10 @@ type EnvPrinter struct {
 	EthHeadTrackerHistoryDepth            uint            `json:"ETH_HEAD_TRACKER_HISTORY_DEPTH"`
 	EthHeadTrackerMaxBufferSize           uint            `json:"ETH_HEAD_TRACKER_MAX_BUFFER_SIZE"`
 	EthMaxGasPriceWei                     *big.Int        `json:"ETH_MAX_GAS_PRICE_WEI"`
-	EthereumURL                           string          `json:"ETH_URL"`
+	EthereumDisabled                      bool            `json:"ETH_DISABLED"`
 	EthereumHTTPURL                       string          `json:"ETH_HTTP_URL"`
 	EthereumSecondaryURLs                 []string        `json:"ETH_SECONDARY_URLS"`
+	EthereumURL                           string          `json:"ETH_URL"`
 	ExplorerURL                           string          `json:"EXPLORER_URL"`
 	FeatureExternalInitiators             bool            `json:"FEATURE_EXTERNAL_INITIATORS"`
 	FeatureFluxMonitor                    bool            `json:"FEATURE_FLUX_MONITOR"`
@@ -76,10 +76,9 @@ type EnvPrinter struct {
 	GasUpdaterEnabled                     bool            `json:"GAS_UPDATER_ENABLED"`
 	GasUpdaterTransactionPercentile       uint16          `json:"GAS_UPDATER_TRANSACTION_PERCENTILE"`
 	InsecureFastScrypt                    bool            `json:"INSECURE_FAST_SCRYPT"`
-	TriggerFallbackDBPollInterval         time.Duration   `json:"JOB_PIPELINE_DB_POLL_INTERVAL"`
+	JSONConsole                           bool            `json:"JSON_CONSOLE"`
 	JobPipelineReaperInterval             time.Duration   `json:"JOB_PIPELINE_REAPER_INTERVAL"`
 	JobPipelineReaperThreshold            time.Duration   `json:"JOB_PIPELINE_REAPER_THRESHOLD"`
-	JSONConsole                           bool            `json:"JSON_CONSOLE"`
 	LinkContractAddress                   string          `json:"LINK_CONTRACT_ADDRESS"`
 	LogLevel                              orm.LogLevel    `json:"LOG_LEVEL"`
 	LogSQLMigrations                      bool            `json:"LOG_SQL_MIGRATIONS"`
@@ -88,23 +87,29 @@ type EnvPrinter struct {
 	MaximumServiceDuration                models.Duration `json:"MAXIMUM_SERVICE_DURATION"`
 	MinIncomingConfirmations              uint32          `json:"MIN_INCOMING_CONFIRMATIONS"`
 	MinRequiredOutgoingConfirmations      uint64          `json:"MIN_OUTGOING_CONFIRMATIONS"`
-	MinimumServiceDuration                models.Duration `json:"MINIMUM_SERVICE_DURATION"`
 	MinimumContractPayment                *assets.Link    `json:"MINIMUM_CONTRACT_PAYMENT_LINK_JUELS"`
 	MinimumRequestExpiration              uint64          `json:"MINIMUM_REQUEST_EXPIRATION"`
+	MinimumServiceDuration                models.Duration `json:"MINIMUM_SERVICE_DURATION"`
 	OCRBootstrapCheckInterval             time.Duration   `json:"OCR_BOOTSTRAP_CHECK_INTERVAL"`
 	OCRContractTransmitterTransmitTimeout time.Duration   `json:"OCR_CONTRACT_TRANSMITTER_TRANSMIT_TIMEOUT"`
-	OCRDatabaseTimeout                    time.Duration   `json:"OCR_DATABASE_TIMEOUT"`
-	P2PListenIP                           string          `json:"P2P_LISTEN_IP"`
-	P2PListenPort                         string          `json:"P2P_LISTEN_PORT"`
-	P2PPeerID                             string          `json:"P2P_PEER_ID"`
-	P2PBootstrapPeers                     []string        `json:"P2P_BOOTSTRAP_PEERS"`
-	OCRIncomingMessageBufferSize          int             `json:"OCR_INCOMING_MESSAGE_BUFFER_SIZE"`
-	OCROutgoingMessageBufferSize          int             `json:"OCR_OUTGOING_MESSAGE_BUFFER_SIZE"`
-	OCRNewStreamTimeout                   time.Duration   `json:"OCR_NEW_STREAM_TIMEOUT"`
 	OCRDHTLookupInterval                  int             `json:"OCR_DHT_LOOKUP_INTERVAL"`
+	OCRDatabaseTimeout                    time.Duration   `json:"OCR_DATABASE_TIMEOUT"`
+	OCRIncomingMessageBufferSize          int             `json:"OCR_INCOMING_MESSAGE_BUFFER_SIZE"`
+	OCRNewStreamTimeout                   time.Duration   `json:"OCR_NEW_STREAM_TIMEOUT"`
+	OCROutgoingMessageBufferSize          int             `json:"OCR_OUTGOING_MESSAGE_BUFFER_SIZE"`
 	OCRTraceLogging                       bool            `json:"OCR_TRACE_LOGGING"`
 	OperatorContractAddress               common.Address  `json:"OPERATOR_CONTRACT_ADDRESS"`
 	OptimismGasFees                       bool            `json:"OPTIMISM_GAS_FEES"`
+	P2PBootstrapPeers                     []string        `json:"P2P_BOOTSTRAP_PEERS"`
+	P2PListenIP                           string          `json:"P2P_LISTEN_IP"`
+	P2PListenPort                         string          `json:"P2P_LISTEN_PORT"`
+	P2PNetworkingStack                    string          `json:"P2P_NETWORKING_STACK"`
+	P2PPeerID                             string          `json:"P2P_PEER_ID"`
+	P2PV2AnnounceAddresses                []string        `json:"P2PV2_ANNOUNCE_ADDRESSES"`
+	P2PV2Bootstrappers                    []string        `json:"P2PV2_BOOTSTRAPPERS"`
+	P2PV2DeltaDial                        models.Duration `json:"P2PV2_DELTA_DIAL"`
+	P2PV2DeltaReconcile                   models.Duration `json:"P2PV2_DELTA_RECONCILE"`
+	P2PV2ListenAddresses                  []string        `json:"P2PV2_LISTEN_ADDRESSES"`
 	Port                                  uint16          `json:"CHAINLINK_PORT"`
 	ReaperExpiration                      models.Duration `json:"REAPER_EXPIRATION"`
 	ReplayFromBlock                       int64           `json:"REPLAY_FROM_BLOCK"`
@@ -114,6 +119,7 @@ type EnvPrinter struct {
 	TLSHost                               string          `json:"CHAINLINK_TLS_HOST"`
 	TLSPort                               uint16          `json:"CHAINLINK_TLS_PORT"`
 	TLSRedirect                           bool            `json:"CHAINLINK_TLS_REDIRECT"`
+	TriggerFallbackDBPollInterval         time.Duration   `json:"JOB_PIPELINE_DB_POLL_INTERVAL"`
 }
 
 // NewConfigPrinter creates an instance of ConfigPrinter
@@ -193,6 +199,12 @@ func NewConfigPrinter(store *store.Store) (ConfigPrinter, error) {
 			P2PListenPort:                         config.P2PListenPortRaw(),
 			P2PBootstrapPeers:                     p2pBootstrapPeers,
 			P2PPeerID:                             config.P2PPeerIDRaw(),
+			P2PNetworkingStack:                    config.P2PNetworkingStackRaw(),
+			P2PV2AnnounceAddresses:                config.P2PV2AnnounceAddressesRaw(),
+			P2PV2DeltaDial:                        config.P2PV2DeltaDial(),
+			P2PV2DeltaReconcile:                   config.P2PV2DeltaReconcile(),
+			P2PV2ListenAddresses:                  config.P2PV2ListenAddresses(),
+			P2PV2Bootstrappers:                    config.P2PV2BootstrappersRaw(),
 			OCRIncomingMessageBufferSize:          config.OCRIncomingMessageBufferSize(),
 			OCROutgoingMessageBufferSize:          config.OCROutgoingMessageBufferSize(),
 			OCRNewStreamTimeout:                   config.OCRNewStreamTimeout(),

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+Added support for latest version of libocr with the V2 networking stack. New env vars to configure this are:
+
+
+
 ## [0.10.8] - 2021-06-21
 
 ### Fixed

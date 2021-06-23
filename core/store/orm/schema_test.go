@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestConfigSchema(t *testing.T) {
@@ -131,8 +131,15 @@ func TestConfigSchema(t *testing.T) {
 		"P2PDHTAnnouncementCounterUserPrefix":       "P2P_DHT_ANNOUNCEMENT_COUNTER_USER_PREFIX",
 		"P2PListenIP":                               "P2P_LISTEN_IP",
 		"P2PListenPort":                             "P2P_LISTEN_PORT",
+		"P2PNetworkingStack":                        "P2P_NETWORKING_STACK",
 		"P2PPeerID":                                 "P2P_PEER_ID",
 		"P2PPeerstoreWriteInterval":                 "P2P_PEERSTORE_WRITE_INTERVAL",
+		"P2PV2AccountAddresses":                     "P2PV2_ANNOUNCE_ADDRESSES",
+		"P2PV2AnnounceAddresses":                    "P2PV2_ANNOUNCE_ADDRESSES",
+		"P2PV2Bootstrappers":                        "P2PV2_BOOTSTRAPPERS",
+		"P2PV2DeltaDial":                            "P2PV2_DELTA_DIAL",
+		"P2PV2DeltaReconcile":                       "P2PV2_DELTA_RECONCILE",
+		"P2PV2ListenAddresses":                      "P2PV2_LISTEN_ADDRESSES",
 		"Port":                                      "CHAINLINK_PORT",
 		"ReaperExpiration":                          "REAPER_EXPIRATION",
 		"ReplayFromBlock":                           "REPLAY_FROM_BLOCK",
@@ -177,8 +184,8 @@ func TestConfigSchema(t *testing.T) {
 		// 4. Add your new config variable to this test
 		//
 
-		require.True(t, found, fmt.Sprintf("New test variable: '%s', see test comment for guide on steps to follow when adding a configuration variable", field.Name))
+		assert.True(t, found, fmt.Sprintf("New test variable: '%s', see test comment for guide on steps to follow when adding a configuration variable", field.Name))
 		env := field.Tag.Get("env")
-		require.Equal(t, item, env)
+		assert.Equal(t, item, env)
 	}
 }
