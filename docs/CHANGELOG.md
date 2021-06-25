@@ -11,7 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Added support for latest version of libocr with the V2 networking stack. New env vars to configure this are:
 
-
+```
+P2P_NETWORKING_STACK
+P2PV2_ANNOUNCE_ADDRESSES
+P2PV2_BOOTSTRAPPERS
+P2PV2_DELTA_DIAL
+P2PV2_DELTA_RECONCILE
+P2PV2_LISTEN_ADDRESSES
+```
 
 ## [0.10.8] - 2021-06-21
 
