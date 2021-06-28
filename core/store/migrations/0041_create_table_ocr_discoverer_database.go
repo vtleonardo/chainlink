@@ -5,7 +5,7 @@ import (
 )
 
 const up41 = `
-CREATE TABLE offchainreporting_discoverer_database (
+CREATE TABLE offchainreporting_discoverer_announcements (
 	local_peer_id text NOT NULL REFERENCES encrypted_p2p_keys (peer_id) DEFERRABLE INITIALLY IMMEDIATE,
 	remote_peer_id text NOT NULL,
 	ann bytea NOT NULL,
@@ -15,12 +15,12 @@ CREATE TABLE offchainreporting_discoverer_database (
 );
 `
 const down41 = `
-DROP TABLE offchainreporting_discoverer_database;
+DROP TABLE offchainreporting_discoverer_announcements;
 `
 
 func init() {
 	Migrations = append(Migrations, &Migration{
-		ID: "0041_create_table_offchainreporting_discoverer_database",
+		ID: "0041_create_table_offchainreporting_discoverer_announcements",
 		Migrate: func(db *gorm.DB) error {
 			return db.Exec(up41).Error
 		},

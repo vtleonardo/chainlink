@@ -20,6 +20,8 @@ P2PV2_DELTA_RECONCILE
 P2PV2_LISTEN_ADDRESSES
 ```
 
+All of these are currently optional, by default OCR will continue to use the existing V1 stack.
+
 ## [0.10.8] - 2021-06-21
 
 ### Fixed

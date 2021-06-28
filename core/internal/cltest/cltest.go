@@ -2120,7 +2120,7 @@ func MustSendingKeys(t *testing.T, ethKeyStore *keystore.Eth) (keys []ethkey.Key
 	return keys
 }
 
-func MustDeterministicP2PPeerID(t *testing.T) p2ppeer.ID {
+func MustRandomP2PPeerID(t *testing.T) p2ppeer.ID {
 	reader := rand.New(source)
 	p2pPrivkey, _, err := cryptop2p.GenerateEd25519Key(reader)
 	require.NoError(t, err)
