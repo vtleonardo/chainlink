@@ -33,7 +33,7 @@ func (t *ETHABIDecodeLogTask) Run(_ context.Context, vars Vars, inputs []Result)
 		topics HashSliceParam
 	)
 	err = multierr.Combine(
-		errors.Wrap(ResolveParam(&data, From(VarExpr(t.Data, vars))), "data"),
+		errors.Wrap(ResolveParam(&data, From(VarExpr(t.Data, vars), nil)), "data"),
 		errors.Wrap(ResolveParam(&topics, From(VarExpr(t.Topics, vars))), "topics"),
 		errors.Wrap(ResolveParam(&theABI, From(NonemptyString(t.ABI))), "abi"),
 	)
@@ -52,9 +52,11 @@ func (t *ETHABIDecodeLogTask) Run(_ context.Context, vars Vars, inputs []Result)
 			return Result{Error: errors.Wrap(ErrBadInput, err2.Error())}
 		}
 	}
-	err = abi.ParseTopicsIntoMap(out, indexedArgs, topics[1:])
-	if err != nil {
-		return Result{Error: errors.Wrap(ErrBadInput, err.Error())}
+	if len(topics) > 1 {
+		err = abi.ParseTopicsIntoMap(out, indexedArgs, topics[1:])
+		if err != nil {
+			return Result{Error: errors.Wrap(ErrBadInput, err.Error())}
+		}
 	}
 	return Result{Value: out}
 }

@@ -37,7 +37,7 @@ func (t *JSONParseTask) Run(_ context.Context, vars Vars, inputs []Result) (resu
 		lax  BoolParam
 	)
 	err = multierr.Combine(
-		errors.Wrap(ResolveParam(&path, From(t.Path)), "path"),
+		errors.Wrap(ResolveParam(&path, From(VarExpr(t.Path, vars), t.Path)), "path"),
 		errors.Wrap(ResolveParam(&data, From(VarExpr(t.Data, vars), Input(inputs, 0))), "data"),
 		errors.Wrap(ResolveParam(&lax, From(NonemptyString(t.Lax), false)), "lax"),
 	)

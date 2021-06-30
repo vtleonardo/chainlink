@@ -1,4 +1,4 @@
-package pipeline
+package eth
 
 import (
 	"bytes"
@@ -18,7 +18,22 @@ var (
 	commaDelim      = []byte(",")
 )
 
-func parseETHABIArgsString(theABI []byte, isLog bool) (args abi.Arguments, indexedArgs abi.Arguments, _ error) {
+func ParseSolidityArgsSignature(theABI []byte) (abi.Arguments, error) {
+	args, _, err := parseABIArgsString(theABI, false)
+	return args, err
+}
+
+func ParseSolidityMethodSignature(theABI []byte) (name string, args abi.Arguments, err error) {
+	name, args, _, err = parseABIString(theABI, false)
+	return name, args, err
+}
+
+func ParseSolidityLogSignature(theABI []byte) (name string, args abi.Arguments, indexedArgs abi.Arguments, err error) {
+	name, args, indexedArgs, err = parseABIString(theABI, true)
+	return name, args, indexedArgs, err
+}
+
+func parseABIArgsString(theABI []byte, isLog bool) (args abi.Arguments, indexedArgs abi.Arguments, _ error) {
 	var argStrs [][]byte
 	if len(bytes.TrimSpace(theABI)) > 0 {
 		argStrs = bytes.Split(theABI, commaDelim)
@@ -84,12 +99,18 @@ func parseETHABIArgsString(theABI []byte, isLog bool) (args abi.Arguments, index
 	return args, indexedArgs, nil
 }
 
-func parseETHABIString(theABI []byte, isLog bool) (name string, args abi.Arguments, indexedArgs abi.Arguments, err error) {
+func parseABIString(theABI []byte, isLog bool) (name string, args abi.Arguments, indexedArgs abi.Arguments, err error) {
 	matches := ethABIRegex.FindAllSubmatch(theABI, -1)
 	if len(matches) != 1 || len(matches[0]) != 3 {
 		return "", nil, nil, errors.Errorf("bad ABI specification: %v", theABI)
 	}
 	name = string(bytes.TrimSpace(matches[0][1]))
-	args, indexedArgs, err = parseETHABIArgsString(matches[0][2], isLog)
+	if len(name) == 0 {
+		if isLog {
+			return "", nil, nil, errors.Errorf("bad ABI specification: no event name")
+		}
+		return "", nil, nil, errors.Errorf("bad ABI specification: no method name")
+	}
+	args, indexedArgs, err = parseABIArgsString(matches[0][2], isLog)
 	return name, args, indexedArgs, err
 }

@@ -23,11 +23,6 @@ type (
 	// The job spawner manages the spinning up and spinning down of the long-running
 	// services that perform the work described by job specs.  Each active job spec
 	// has 1 or more of these services associated with it.
-	//
-	// At present, Flux Monitor and Offchain Reporting jobs can only have a single
-	// "initiator", meaning that they only require a single service.  But the older
-	// "direct request" model allows for multiple initiators, which imply multiple
-	// services.
 	Spawner interface {
 		service.Service
 		CreateJob(ctx context.Context, spec Job, name null.String) (int32, error)
@@ -137,7 +132,7 @@ func (js *spawner) runLoop() {
 	}
 
 	// Initialize the DB poll ticker
-	dbPollTicker := time.NewTicker(utils.WithJitter(js.config.TriggerFallbackDBPollInterval()))
+	dbPollTicker := time.NewTicker(utils.WithJitter(100 * time.Millisecond))
 	defer dbPollTicker.Stop()
 
 	// Initialize the poll that checks for deleted jobs and removes them
@@ -218,7 +213,7 @@ func (js *spawner) startUnclaimedServices() {
 		js.activeJobs[spec.ID] = aj
 	}
 
-	logger.Infow("JobSpawner: all jobs running", "count", len(specs))
+	// logger.Infow("JobSpawner: all jobs running", "count", len(specs))
 }
 
 func (js *spawner) stopAllServices() {

@@ -24,6 +24,8 @@ import (
 )
 
 // JobsController manages jobs
+
+// JobsController manages jobs
 type JobsController struct {
 	App chainlink.Application
 }
@@ -81,6 +83,8 @@ type CreateJobRequest struct {
 // Example:
 // "POST <application>/jobs"
 func (jc *JobsController) Create(c *gin.Context) {
+	// bs, _ := ioutil.ReadAll(c.Request.Body)
+	// fmt.Println(string(bs))
 	request := CreateJobRequest{}
 	if err := c.ShouldBindJSON(&request); err != nil {
 		jsonAPIError(c, http.StatusUnprocessableEntity, err)

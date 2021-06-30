@@ -1,8 +1,11 @@
 pragma solidity ^0.7.0;
 
 import "../ChainlinkClient.sol";
+import "../Chainlink.sol";
 
 contract MultiWordConsumer is ChainlinkClient{
+  using Chainlink for Chainlink.Request;
+
   bytes32 internal specId;
   bytes public currentPrice;
 
@@ -69,6 +72,27 @@ contract MultiWordConsumer is ChainlinkClient{
     public
   {
     Chainlink.Request memory req = buildChainlinkRequest(specId, address(this), this.fulfillMultipleParameters.selector);
+    requestOracleData(req, _payment);
+  }
+
+  function requestMultipleParametersWithCustomURLs(
+    string memory _urlUSD,
+    string memory _pathUSD,
+    string memory _urlEUR,
+    string memory _pathEUR,
+    string memory _urlJPY,
+    string memory _pathJPY,
+    uint256 _payment
+  )
+    public
+  {
+    Chainlink.Request memory req = buildChainlinkRequest(specId, address(this), this.fulfillMultipleParameters.selector);
+    req.add("urlUSD", _urlUSD);
+    req.add("pathUSD", _pathUSD);
+    req.add("urlEUR", _urlEUR);
+    req.add("pathEUR", _pathEUR);
+    req.add("urlJPY", _urlJPY);
+    req.add("pathJPY", _pathJPY);
     requestOracleData(req, _payment);
   }
 

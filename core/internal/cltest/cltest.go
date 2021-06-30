@@ -1384,6 +1384,13 @@ func AssertPipelineRunsStays(t testing.TB, pipelineSpecID int32, store *strpkg.S
 	return prs
 }
 
+func AssertPipelineTaskRunsSuccessful(t testing.TB, runs []pipeline.TaskRun) {
+	t.Helper()
+	for _, run := range runs {
+		require.True(t, run.Error.IsZero())
+	}
+}
+
 // WaitForRunsAtLeast waits for at least the passed number of runs to start.
 func WaitForRunsAtLeast(t testing.TB, j models.JobSpec, store *strpkg.Store, want int) {
 	t.Helper()

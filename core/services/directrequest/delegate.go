@@ -11,7 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 	"github.com/smartcontractkit/chainlink/core/assets"
-	"github.com/smartcontractkit/chainlink/core/internal/gethwrappers/generated/oracle_wrapper"
+	"github.com/smartcontractkit/chainlink/core/internal/gethwrappers/generated/operator_wrapper"
 	"github.com/smartcontractkit/chainlink/core/logger"
 	"github.com/smartcontractkit/chainlink/core/services/eth"
 	"github.com/smartcontractkit/chainlink/core/services/job"
@@ -74,7 +74,7 @@ func (d *Delegate) ServicesForSpec(job job.Job) (services []job.Service, err err
 	}
 	concreteSpec := job.DirectRequestSpec
 
-	oracle, err := oracle_wrapper.NewOracle(concreteSpec.ContractAddress.Address(), d.ethClient)
+	oracle, err := operator_wrapper.NewOperator(concreteSpec.ContractAddress.Address(), d.ethClient)
 	if err != nil {
 		return
 	}
@@ -111,7 +111,7 @@ var (
 type listener struct {
 	config                   Config
 	logBroadcaster           log.Broadcaster
-	oracle                   oracle_wrapper.OracleInterface
+	oracle                   operator_wrapper.OperatorInterface
 	pipelineRunner           pipeline.Runner
 	db                       *gorm.DB
 	pipelineORM              pipeline.ORM
@@ -128,12 +128,15 @@ type listener struct {
 // Start complies with job.Service
 func (l *listener) Start() error {
 	return l.StartOnce("DirectRequestListener", func() error {
+		fmt.Println("xyzzy 1", operator_wrapper.OperatorOracleRequest{}.Topic().String())
+		fmt.Println("xyzzy 2", l.onChainJobSpecID.String())
+
 		unsubscribeLogs := l.logBroadcaster.Register(l, log.ListenerOpts{
 			Contract: l.oracle.Address(),
 			ParseLog: l.oracle.ParseLog,
 			LogsWithTopics: map[common.Hash][][]log.Topic{
-				oracle_wrapper.OracleOracleRequest{}.Topic():       {{log.Topic(l.onChainJobSpecID)}},
-				oracle_wrapper.OracleCancelOracleRequest{}.Topic(): {{log.Topic(l.onChainJobSpecID)}},
+				operator_wrapper.OperatorOracleRequest{}.Topic():       {{log.Topic(l.onChainJobSpecID)}},
+				operator_wrapper.OperatorCancelOracleRequest{}.Topic(): {{log.Topic(l.onChainJobSpecID)}},
 			},
 			NumConfirmations: l.minIncomingConfirmations,
 		})
@@ -219,9 +222,9 @@ func (l *listener) handleReceivedLogs() {
 		}
 
 		switch log := log.(type) {
-		case *oracle_wrapper.OracleOracleRequest:
+		case *operator_wrapper.OperatorOracleRequest:
 			l.handleOracleRequest(log, lb)
-		case *oracle_wrapper.OracleCancelOracleRequest:
+		case *operator_wrapper.OperatorCancelOracleRequest:
 			l.handleCancelOracleRequest(log, lb)
 		default:
 			logger.Warnf("unexpected log type %T", log)
@@ -229,7 +232,7 @@ func (l *listener) handleReceivedLogs() {
 	}
 }
 
-func oracleRequestToMap(request *oracle_wrapper.OracleOracleRequest) map[string]interface{} {
+func oracleRequestToMap(request *operator_wrapper.OperatorOracleRequest) map[string]interface{} {
 	result := make(map[string]interface{})
 	result["specId"] = fmt.Sprintf("0x%x", request.SpecId)
 	result["requester"] = request.Requester.Hex()
@@ -243,7 +246,7 @@ func oracleRequestToMap(request *oracle_wrapper.OracleOracleRequest) map[string]
 	return result
 }
 
-func (l *listener) handleOracleRequest(request *oracle_wrapper.OracleOracleRequest, lb log.Broadcast) {
+func (l *listener) handleOracleRequest(request *operator_wrapper.OperatorOracleRequest, lb log.Broadcast) {
 	minimumContractPayment := l.config.MinimumContractPayment()
 	if minimumContractPayment != nil {
 		requestPayment := assets.Link(*request.Payment)
@@ -322,7 +325,7 @@ func (l *listener) handleOracleRequest(request *oracle_wrapper.OracleOracleReque
 }
 
 // Cancels runs that haven't been started yet, with the given request ID
-func (l *listener) handleCancelOracleRequest(request *oracle_wrapper.OracleCancelOracleRequest, lb log.Broadcast) {
+func (l *listener) handleCancelOracleRequest(request *operator_wrapper.OperatorCancelOracleRequest, lb log.Broadcast) {
 	runCloserChannelIf, loaded := l.runs.LoadAndDelete(formatRequestId(request.RequestId))
 	if loaded {
 		close(runCloserChannelIf.(chan struct{}))
