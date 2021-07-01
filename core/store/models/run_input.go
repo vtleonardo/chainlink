@@ -82,6 +82,7 @@ func (ri RunInput) TaskRunID() uuid.UUID {
 }
 
 func (ri RunInput) CloneWithData(data JSON) RunInput {
+	//revive:disable:modifies-value-receiver
 	ri.data = data
 	return ri
 }
