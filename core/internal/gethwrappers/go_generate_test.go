@@ -175,11 +175,10 @@ func getProjectRoot(t *testing.T) (rootPath string) {
 	root, err := os.Getwd()
 	require.NoError(t, err, "could not get current working directory")
 	for root != "/" { // Walk up path to find dir containing go.mod
-		if _, err := os.Stat(filepath.Join(root, "go.mod")); os.IsNotExist(err) {
-			root = filepath.Dir(root)
-		} else {
+		if _, err := os.Stat(filepath.Join(root, "go.mod")); os.IsExist(err) {
 			return root
 		}
+		root = filepath.Dir(root)
 	}
 	t.Fatal("could not find project root")
 	panic("can't get here") // Appease staticcheck

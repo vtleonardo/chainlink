@@ -358,11 +358,10 @@ func getTxDataUsingABIEncoding(encodingSpec []string, jsonValues []gjson.Result)
 			values[i] = big.NewInt(jsonValues[i].Int()) // JSON specs can't actually handle 256bit numbers only 64bit?
 		case gjson.False, gjson.True:
 			// Note we can potentially use this cast strategy to support more types
-			if reflect.TypeOf(jsonValues[i].Value()).ConvertibleTo(solidityTypeToGoType[argType]) {
-				values[i] = reflect.ValueOf(jsonValues[i].Value()).Convert(solidityTypeToGoType[argType]).Interface()
-			} else {
+			if !reflect.TypeOf(jsonValues[i].Value()).ConvertibleTo(solidityTypeToGoType[argType]) {
 				return nil, errors.Wrapf(ErrInvalidABIEncoding, "can't convert %+v (%s) to %v", jsonValues[i].Value(), jsonValues[i].Type, argType)
 			}
+			values[i] = reflect.ValueOf(jsonValues[i].Value()).Convert(solidityTypeToGoType[argType]).Interface()
 		default:
 			// Complex types, array or object. Support as needed
 			return nil, errors.Wrapf(ErrInvalidABIEncoding, "can't convert %+v (%s) to %v", jsonValues[i].Value(), jsonValues[i].Type, argType)

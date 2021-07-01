@@ -175,11 +175,10 @@ func BuildFMTaskDAG(js models.JobSpec) (string, *pipeline.Pipeline, error) {
 			attrs := map[string]string{
 				"type": pipeline.TaskTypeMultiply.String(),
 			}
-			if ts.Params.Get("times").Exists() {
-				attrs["times"] = ts.Params.Get("times").String()
-			} else {
+			if !ts.Params.Get("times").Exists() {
 				return "", nil, errors.New("no times param on multiply task")
 			}
+			attrs["times"] = ts.Params.Get("times").String()
 			n := pipeline.NewGraphNode(dg.NewNode(), fmt.Sprintf("multiply%d", i), attrs)
 			dg.AddNode(n)
 			dg.SetEdge(dg.NewEdge(last, n))
