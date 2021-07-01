@@ -143,6 +143,10 @@ func (gu *gasUpdater) Close() error {
 	})
 }
 
+func (gu *gasUpdater) SetLogger(logger *logger.Logger) {
+	gu.logger = logger
+}
+
 func (gu *gasUpdater) runLoop() {
 	defer gu.wg.Done()
 	for {
